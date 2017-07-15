@@ -1,0 +1,13 @@
+{
+	"name": "iChef",
+	"description": "AngelHack Hackathon project",
+	"main": "src/app.js",
+	"dependencies": {
+		"tabris": "nightly"
+	},
+	"license": "SEE LICENSE IN LICENSE.txt",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/cookieguru/ichef.git"
+	}
+}

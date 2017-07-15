@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='utf-8'?>
+<widget id="com.example.ichef" version="1.0.0">
+    <name>iChef</name>
+    <description>AngelHack Hackathon project</description>
+    <author email="nobody@example.com" href="http://localhost/">iChef Team</author>
+
+    <preference name="EnableDeveloperConsole" value="$IS_DEBUG" />
+
+    <plugin name="cordova-plugin-camera" version="2.3.1" />
+</widget>
