@@ -1,5 +1,6 @@
 const BasePage = require('./base.js');
 const BorderedCell = require('../components/bordered_cell.js');
+const RecipeService = require('../services/recipe.js');
 const WebViewPage = require('./webview.js');
 
 const margin = 16;
@@ -9,6 +10,7 @@ class RecipePage extends BasePage {
 		this.page = new tabris.Page({
 			title: 'Loading'
 		});
+		this.items = [];
 
 		let imageContainer = new tabris.Composite({
 			height: Math.floor(screen.height / 4),
@@ -26,8 +28,7 @@ class RecipePage extends BasePage {
 			top: 0, bottom: 0, left: 0, right: 0,
 			scaleMode: 'fill',
 		}).on('load', () => {
-			console.log('image loaded');
-			activityIndicator.dispose();
+			activityIndicator.visible = false;
 		}).appendTo(imageContainer);
 
 		let button = new tabris.Button({
@@ -39,11 +40,11 @@ class RecipePage extends BasePage {
 		}).appendTo(this.page);
 
 		this.ingredientsView = new tabris.CollectionView({
-			left: 0, top: [imageContainer, margin], right: 0, bottom: [button, margin],
+			left: 0, top: [imageContainer, 0], right: 0, bottom: [button, margin],
 			itemCount: 0,
 			refreshIndicator: true,
 			refreshMessage: 'loading...',
-			cellHeight: 30,
+			cellHeight: 'auto',
 			createCell: () => {
 				let cell = new BorderedCell();
 				new tabris.TextView({
@@ -58,16 +59,43 @@ class RecipePage extends BasePage {
 			}
 		}).appendTo(this.page);
 
+		new tabris.Action({
+			title: 'Action',
+			image: {
+				src: 'images/shuffle.png',
+				title: 'New',
+				scale: 3,
+			}
+		}).on('select', () => {
+			this._loadData();
+		}).appendTo(this.navigationView);
+
 		this._loadData();
 
 		return this.page;
 	}
 
 	_loadData() {
-		const data = require('./data.json');
-		setTimeout(() => {
-			this._setData(data.label, data.image, data.url, data.ingredientLines);
-		}, 1234);
+		this.ingredientsView.remove(0, this.items.length);
+		this.page.title = 'Loading...';
+		this.page.apply({
+			'#image': {
+				visible: false,
+			},
+			CollectionView: {
+				refreshIndicator: true,
+				refreshMessage: 'Loading',
+			},
+			Button: {
+				visible: false,
+			},
+			ActivityIndicator: {
+				visible: true,
+			},
+		});
+		RecipeService.get().then((item) => {
+			this._setData(item.title, item.image, item.url, item.ingredients);
+		});
 	}
 
 	/**
@@ -82,6 +110,7 @@ class RecipePage extends BasePage {
 		this.page.title = title;
 		this.page.apply({
 			'#image': {
+				visible: true,
 				image: {
 					src: image,
 				}
@@ -92,7 +121,7 @@ class RecipePage extends BasePage {
 			},
 			Button: {
 				visible: true,
-			}
+			},
 		});
 		this.page.find('Button').first().data.url = url;
 	}

@@ -1,4 +1,5 @@
-const constants = require('../constants.js');
+const {BASE_URL, USERID} = require('../constants.js');
+const {id: userId} = require('./user.js');
 
 class ItemsService {
 	/**
@@ -6,18 +7,17 @@ class ItemsService {
 	 */
 	static get() {
 		return new Promise((resolve, reject) => {
-			let temp = [];
-			for(let i = 0; i < 4; i++) {
-				let text = '';
-				let possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
-
-				for(let i = 0; i < 16; i++) {
-					text += possible.charAt(Math.floor(Math.random() * possible.length));
+			let url = BASE_URL.replace(USERID, userId) + 'item';
+			fetch(url).then(response => {
+				if(!response.ok) {
+					reject(`Unable to upload photo: ${response.status} ${response.statusText}`);
 				}
-
-				temp.push(text);
-			}
-			resolve(temp);
+				return response.json();
+			}).then(data => {
+				resolve(data);
+			}).catch((error) => {
+				reject(error);
+			});
 		});
 	}
 }

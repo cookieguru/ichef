@@ -1,22 +1,32 @@
-const constants = require('../constants.js');
+const {BASE_URL, USERID} = require('../constants.js');
+const {id: userId} = require('./user.js');
 
 class PhotoService {
 	/**
 	 * Sends a photo
-	 * @return {Promise<undefined>,<string>}
+	 * @return {Promise<Object>,<string>}
 	 */
 	static send(data) {
 		return new Promise((resolve, reject) => {
-			fetch('https://freegeoip.net/json/', {
+			let url = BASE_URL.replace(USERID, userId) + 'image';
+			fetch(url, {
 				method: 'POST',
-				body: data
-			}).then(function(response) {
+				headers: {
+					'Accept': 'application/json, text/plain, */*',
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({
+					data: data
+				})
+			}).then(response => {
 				if(!response.ok) {
 					reject(`Unable to upload photo: ${response.status} ${response.statusText}`);
 				}
 				return response.json();
-			}).then(function(data) {
+			}).then(data => {
 				resolve(data);
+			}).catch((error) => {
+				reject(error);
 			});
 		});
 	}

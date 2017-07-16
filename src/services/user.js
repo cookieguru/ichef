@@ -3,21 +3,12 @@ const constants = require('../constants.js');
 class UserService {
 	/**
 	 * Registers a new user
-	 * @return {Promise<undefined>,<string>}
+	 * @return {Promise<int>,<string>}
 	 */
 	static register() {
-		return new Promise((resolve, reject) => {
-			fetch('https://freegeoip.net/json/').then((response) => {
-				if(!response.ok) {
-					reject(`Unable to register: ${response.status} ${response.statusText}`);
-				}
-				return response.json();
-			}).then((json) => {
-				UserService.id = json.metro_code;
-				resolve();
-			}).catch((err) => {
-				reject(err);
-			});
+		return new Promise((resolve) => {
+			UserService.id = 1;
+			resolve(1);
 		});
 	}
 

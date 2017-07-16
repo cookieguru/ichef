@@ -1,3 +1,4 @@
+const alert = require('../components/alert.js');
 const BasePage = require('./base.js');
 const BorderedCell = require('../components/bordered_cell.js');
 const ImagePage = require('./image.js');
@@ -21,12 +22,16 @@ class ItemsListPage extends BasePage {
 					top: 8, left: 8, right: 8, bottom: 8,
 				}).appendTo(cell);
 				cell.on('tap', () => {
-					new ImagePage(this.navigationView).factory(cell.find('TextView').first().text, 'https://cdn.pixabay.com/photo/2016/12/04/23/36/eggs-1882837_960_720.jpg').appendTo(this.navigationView);
+					let textView = cell.find('TextView').first();
+					new ImagePage(this.navigationView).factory(textView.text, textView.data.url).appendTo(this.navigationView);
 				});
 				return cell;
 			},
 			updateCell: (cell, index) => {
-				cell.find('TextView').first().text = items[index];
+				let item = items[index];
+				let textView = cell.find('TextView').first();
+				textView.text = item.label;
+				textView.data.url = item.imageUrl;
 			}
 		}).on('refresh', loadItems).appendTo(page);
 
@@ -45,13 +50,7 @@ class ItemsListPage extends BasePage {
 				view.refresh();
 				view.reveal(0);
 			}).catch((error) => {
-				new tabris.AlertDialog({
-					title: 'It broke',
-					message: error,
-					buttons: {
-						ok: 'OK',
-					}
-				}).open();
+				alert('Cannot load items', error);
 			}).then(() => {
 				view.refreshIndicator = false;
 				view.refreshMessage = '';

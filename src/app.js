@@ -1,9 +1,11 @@
 const BorderedCell = require('./components/bordered_cell.js');
+const HomePage = require('./pages/home.js');
 const ItemsListPage = require('./pages/items.js');
 const NewItemPage = require('./pages/new_item.js');
 const RecipePage = require('./pages/recipe.js');
 const UserPage = require('./pages/user.js');
 const UserService = require('./services/user.js');
+const alert = require('./components/alert.js');
 
 let navigationView = new tabris.NavigationView({
 	left: 0, top: 0, right: 0, bottom: 0,
@@ -12,15 +14,15 @@ let navigationView = new tabris.NavigationView({
 
 
 let pageNames = [
-	'Add item',
+	'Add Ingredient',
 	'My Ingredients',
-	'Get recipe',
+	'Get Recipe',
 ];
 
 new tabris.CollectionView({
 	left: 0, top: 'prev()', right: 0, bottom: 0,
 	itemCount: pageNames.length,
-	createCell: function createCell() {
+	createCell: () =>{
 		let cell = new BorderedCell();
 		new tabris.TextView({
 			left: 17, centerY: 0,
@@ -29,8 +31,9 @@ new tabris.CollectionView({
 		}).appendTo(cell);
 		return cell;
 	},
-	updateCell: function updateCell(cell, index) {
+	updateCell: (cell, index) => {
 		let page = pageNames[index];
+		/** @type {BorderedCell} */
 		cell.apply({
 			TextView: {text: page},
 		});
@@ -42,9 +45,9 @@ new tabris.CollectionView({
 	let page;
 	if(name === 'My Ingredients') {
 		page = new ItemsListPage(navigationView).factory();
-	} else if(name === 'Add item') {
+	} else if(name === 'Add Ingredient') {
 		page = new NewItemPage().factory();
-	} else if(name === 'Get recipe') {
+	} else if(name === 'Get Recipe') {
 		page = new RecipePage(navigationView).factory();
 	}
 	if(page) {
@@ -55,6 +58,7 @@ new tabris.CollectionView({
 function registeredView() {
 	navigationView.drawerActionVisible = true;
 	tabris.ui.drawer.enabled = true;
+	new HomePage(navigationView).factory().appendTo(navigationView);
 }
 
 if(UserService.isRegistered) {
