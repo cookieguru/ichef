@@ -70,7 +70,7 @@ class RecipePage extends BasePage {
 			this._loadData();
 		}).appendTo(this.navigationView);
 
-		this.page.on('dispose' () => {
+		this.page.on('dispose', () => {
 			action.dispose();
 		});
 
