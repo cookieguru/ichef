@@ -59,7 +59,7 @@ class RecipePage extends BasePage {
 			}
 		}).appendTo(this.page);
 
-		new tabris.Action({
+		let action = new tabris.Action({
 			title: 'Action',
 			image: {
 				src: 'images/shuffle.png',
@@ -69,6 +69,10 @@ class RecipePage extends BasePage {
 		}).on('select', () => {
 			this._loadData();
 		}).appendTo(this.navigationView);
+
+		this.page.on('dispose' () => {
+			action.dispose();
+		});
 
 		this._loadData();
 
